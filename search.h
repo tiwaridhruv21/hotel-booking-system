@@ -33,4 +33,4 @@ double calculate_total_revenue(RoomList *list);
 void generate_daily_report(RoomList *list);
 
 #endif
-```
+
