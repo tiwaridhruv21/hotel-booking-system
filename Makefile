@@ -1,5 +1,5 @@
-﻿hotel: main.o list.o persistence.o booking.o ui.o reporting.o
-	gcc -Wall -Wextra main.o list.o persistence.o booking.o ui.o reporting.o -o hotel
+hotel: main.o list.o file_io.o booking.o ui.o search.o
+	gcc -Wall -Wextra main.o list.o file_io.o booking.o ui.o search.o -o hotel
 
 main.o: main.c
 	gcc -Wall -Wextra -c main.c -o main.o
@@ -7,8 +7,8 @@ main.o: main.c
 list.o: list.c
 	gcc -Wall -Wextra -c list.c -o list.o
 
-persistence.o: persistence.c
-	gcc -Wall -Wextra -c persistence.c -o persistence.o
+file_io.o: file_io.c
+	gcc -Wall -Wextra -c file_io.c -o file_io.o
 
 booking.o: booking.c
 	gcc -Wall -Wextra -c booking.c -o booking.o
@@ -16,5 +16,5 @@ booking.o: booking.c
 ui.o: ui.c
 	gcc -Wall -Wextra -c ui.c -o ui.o
 
-reporting.o: reporting.c
-	gcc -Wall -Wextra -c reporting.c -o reporting.o
+search.o: search.c
+	gcc -Wall -Wextra -c search.c -o search.o
