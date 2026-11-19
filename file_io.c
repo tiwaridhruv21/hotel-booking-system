@@ -1,7 +1,7 @@
 
 #include <stdio.h>
 #include "file_io.h"
-#include "linked_list.h"
+#include "list.h"
 
 int load_rooms_from_file(RoomList *list)
 {
@@ -23,13 +23,7 @@ int load_rooms_from_file(RoomList *list)
             return 0;
         }
 
-        // Check whether the room number already exists.
-        if (room_exists(list, room.room_number))
-        {
-            continue;
-        }
-
-        if (insert_room(list, room) == 0)
+        if (add_room(list, room) == 0)
         {
             fclose(file);
             return 0;
