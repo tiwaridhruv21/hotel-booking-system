@@ -2,3 +2,5 @@
 hotel.exe
 *.o
 *.dat
+
+.vscode/

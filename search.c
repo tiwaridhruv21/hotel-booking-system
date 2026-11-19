@@ -104,7 +104,7 @@ void generate_daily_report(RoomList *list) {
     int available = 0;
     int occupied = 0;
     int maintenance = 0;
-    double revenue = 0.0;
+    double revenue = calculate_total_revenue(list);
 
     while (curr != NULL) {
         total++;
@@ -112,7 +112,7 @@ void generate_daily_report(RoomList *list) {
             available++;
         } else if (curr->data.status == ROOM_OCCUPIED) {
             occupied++;
-            revenue += curr->data.price_per_night * curr->data.nights_booked;
+            
         } else {
             maintenance++;
         }
