@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 
 #include "room.h"
@@ -6,16 +5,15 @@
 #include "file_io.h"
 #include "ui.h"
 
-/* Main function */
 int main(void)
 {
     RoomList list;
     int choice;
 
-    /* Initialize the room list */
+    /* Initialize room list */
     init_room_list(&list);
 
-    /* Load existing rooms from file */
+    /* Load saved rooms */
     load_rooms_from_file(&list);
 
     printf("\nHotel Booking System Started!\n");
@@ -31,8 +29,8 @@ int main(void)
                 break;
 
             case 2:
-   		 handle_add_room(&list);
-  		 break;
+                handle_add_room(&list);
+                break;
 
             case 3:
                 handle_search_menu(&list);
@@ -41,6 +39,7 @@ int main(void)
             case 4:
                 handle_report_menu(&list);
                 break;
+
             case 5:
                 printf("\nSaving hotel records...\n");
                 save_rooms_to_file(&list);
@@ -48,7 +47,7 @@ int main(void)
                 break;
 
             case -1:
-                printf("\nInput ended. Saving hotel records...\n");
+                printf("\nSaving hotel records...\n");
                 save_rooms_to_file(&list);
                 break;
         }
@@ -60,4 +59,3 @@ int main(void)
 
     return 0;
 }
-
