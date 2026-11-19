@@ -391,7 +391,7 @@ void handle_room_list_menu(RoomList *list)
                 return;
         }
 
-    } while (choice != 5);
+    } while (choice != 6);
 }
 
 
