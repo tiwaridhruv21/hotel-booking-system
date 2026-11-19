@@ -1,11 +1,23 @@
 ﻿#include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 #include "search.h"
+
+static void make_lowercase(const char *src, char *dst, int size) {
+    int i = 0;
+    while (src[i] != '\0' && i < size - 1) {
+        dst[i] = (char)tolower((unsigned char)src[i]);
+        i++;
+    }
+    dst[i] = '\0';
+}
 
 Node *search_room_by_number(RoomList *list, int room_number) {
     Node *curr = list->head;
-    while (curr) {
-        if (curr->data.room_number == room_number) return curr;
+    while (curr != NULL) {
+        if (curr->data.room_number == room_number) {
+            return curr;
+        }
         curr = curr->next;
     }
     return NULL;
@@ -13,11 +25,23 @@ Node *search_room_by_number(RoomList *list, int room_number) {
 
 int search_guest_by_name(RoomList *list, const char *guest_name) {
     Node *curr = list->head;
+    char query[50];
+    char name_buf[50];
     int count = 0;
-    while (curr) {
-        if (strcmp(curr->data.guest_name, guest_name) == 0) {
-            printf("Room %d: %s\n", curr->data.room_number, curr->data.guest_name);
-            count++;
+
+    make_lowercase(guest_name, query, sizeof(query));
+
+    while (curr != NULL) {
+        if (curr->data.status == ROOM_OCCUPIED) {
+            make_lowercase(curr->data.guest_name, name_buf, sizeof(name_buf));
+            if (strstr(name_buf, query) != NULL) {
+                printf("Room %d | Guest: %s | Nights: %d | Rate: %.2f\n",
+                       curr->data.room_number,
+                       curr->data.guest_name,
+                       curr->data.nights_booked,
+                       curr->data.price_per_night);
+                count++;
+            }
         }
         curr = curr->next;
     }
@@ -27,8 +51,18 @@ int search_guest_by_name(RoomList *list, const char *guest_name) {
 int search_rooms_by_type(RoomList *list, RoomType type) {
     Node *curr = list->head;
     int count = 0;
-    while (curr) {
-        if (curr->data.type == type) count++;
+
+    while (curr != NULL) {
+        if (curr->data.type == type) {
+            const char *st = (curr->data.status == ROOM_AVAILABLE) ? "Available" :
+                             (curr->data.status == ROOM_OCCUPIED) ? "Occupied" : "Maintenance";
+            printf("Room %d | Rate: %.2f | Status: %s | Guest: %s\n",
+                   curr->data.room_number,
+                   curr->data.price_per_night,
+                   st,
+                   curr->data.guest_name);
+            count++;
+        }
         curr = curr->next;
     }
     return count;
@@ -37,8 +71,15 @@ int search_rooms_by_type(RoomList *list, RoomType type) {
 int search_rooms_by_status(RoomList *list, RoomStatus status) {
     Node *curr = list->head;
     int count = 0;
-    while (curr) {
-        if (curr->data.status == status) count++;
+
+    while (curr != NULL) {
+        if (curr->data.status == status) {
+            printf("Room %d | Rate: %.2f | Guest: %s\n",
+                   curr->data.room_number,
+                   curr->data.price_per_night,
+                   curr->data.guest_name);
+            count++;
+        }
         curr = curr->next;
     }
     return count;
@@ -47,7 +88,8 @@ int search_rooms_by_status(RoomList *list, RoomStatus status) {
 double calculate_total_revenue(RoomList *list) {
     Node *curr = list->head;
     double total = 0.0;
-    while (curr) {
+
+    while (curr != NULL) {
         if (curr->data.status == ROOM_OCCUPIED) {
             total += curr->data.price_per_night * curr->data.nights_booked;
         }
@@ -57,7 +99,33 @@ double calculate_total_revenue(RoomList *list) {
 }
 
 void generate_daily_report(RoomList *list) {
-    int occ = search_rooms_by_status(list, ROOM_OCCUPIED);
-    double rev = calculate_total_revenue(list);
-    printf("\nOccupied Rooms: %d / %d | Revenue: %.2f\n", occ, list->total_rooms, rev);
+    Node *curr = list->head;
+    int total = 0;
+    int available = 0;
+    int occupied = 0;
+    int maintenance = 0;
+    double revenue = 0.0;
+
+    while (curr != NULL) {
+        total++;
+        if (curr->data.status == ROOM_AVAILABLE) {
+            available++;
+        } else if (curr->data.status == ROOM_OCCUPIED) {
+            occupied++;
+            revenue += curr->data.price_per_night * curr->data.nights_booked;
+        } else {
+            maintenance++;
+        }
+        curr = curr->next;
+    }
+
+    double rate = (total > 0) ? ((double)occupied / total) * 100.0 : 0.0;
+
+    printf("\n--- End-of-Day Occupancy & Revenue Report ---\n");
+    printf("Total Rooms:       %d\n", total);
+    printf("Available Rooms:   %d\n", available);
+    printf("Occupied Rooms:    %d\n", occupied);
+    printf("Maintenance Rooms: %d\n", maintenance);
+    printf("Occupancy Rate:    %.1f%%\n", rate);
+    printf("Active Revenue:    %.2f\n", revenue);
 }
