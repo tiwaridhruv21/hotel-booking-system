@@ -1,9 +1,13 @@
-﻿#include <stdio.h>
+#include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 #include "search.h"
 
 static void make_lowercase(const char *src, char *dst, int size) {
+    if (src == NULL || dst == NULL || size <= 0) {
+        return;
+    }
+
     int i = 0;
     while (src[i] != '\0' && i < size - 1) {
         dst[i] = (char)tolower((unsigned char)src[i]);
@@ -13,6 +17,10 @@ static void make_lowercase(const char *src, char *dst, int size) {
 }
 
 Node *search_room_by_number(RoomList *list, int room_number) {
+    if (list == NULL || room_number <= 0) {
+        return NULL;
+    }
+
     Node *curr = list->head;
     while (curr != NULL) {
         if (curr->data.room_number == room_number) {
@@ -24,6 +32,10 @@ Node *search_room_by_number(RoomList *list, int room_number) {
 }
 
 int search_guest_by_name(RoomList *list, const char *guest_name) {
+    if (list == NULL || guest_name == NULL || guest_name[0] == '\0') {
+        return 0;
+    }
+
     Node *curr = list->head;
     char query[50];
     char name_buf[50];
@@ -49,6 +61,10 @@ int search_guest_by_name(RoomList *list, const char *guest_name) {
 }
 
 int search_rooms_by_type(RoomList *list, RoomType type) {
+    if (list == NULL) {
+        return 0;
+    }
+
     Node *curr = list->head;
     int count = 0;
 
@@ -69,6 +85,10 @@ int search_rooms_by_type(RoomList *list, RoomType type) {
 }
 
 int search_rooms_by_status(RoomList *list, RoomStatus status) {
+    if (list == NULL) {
+        return 0;
+    }
+
     Node *curr = list->head;
     int count = 0;
 
@@ -86,6 +106,10 @@ int search_rooms_by_status(RoomList *list, RoomStatus status) {
 }
 
 double calculate_total_revenue(RoomList *list) {
+    if (list == NULL) {
+        return 0.0;
+    }
+
     Node *curr = list->head;
     double total = 0.0;
 
@@ -99,6 +123,11 @@ double calculate_total_revenue(RoomList *list) {
 }
 
 void generate_daily_report(RoomList *list) {
+    if (list == NULL) {
+        printf("\nUnable to generate report.\n");
+        return;
+    }
+
     Node *curr = list->head;
     int total = 0;
     int available = 0;
@@ -112,7 +141,6 @@ void generate_daily_report(RoomList *list) {
             available++;
         } else if (curr->data.status == ROOM_OCCUPIED) {
             occupied++;
-            
         } else {
             maintenance++;
         }
